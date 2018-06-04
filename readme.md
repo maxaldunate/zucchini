@@ -16,32 +16,29 @@ The target is to mount a completly working Restfull API. Accesible via http and 
 
 Resources
 - Courses
-  - Fileds: Id, Name, Date Start, Date End, University Owner
+  - Fileds: Id, Area, Name, Date Start, Date End, University Owner
   - Added, Updated by the owner University
+  - List all courses from now on by name
+  - List all courses from now on by university
+  - List all courses from now on by area
 - Students
   - Fields: Id, Full Name, email, phone
   - Self Registration
   - Can register to a available course (between dates)
-  - List all current courses
-  - List all old courses
-  - List all future courses
+  - List my current courses
+  - List my old courses
+  - List my future courses
 - Universities
   - Fields: Id, Name, email, email notification
   - Self Registration
-  - List owned courses
-  - List students by course
+  - List owned current courses
+  - List owned old courses
+  - List owned future courses
+  - List students by one course
   - List all students in their courses
 
-## Architecture
+## Architecture & AWS Resources
 
-
-Public Resources
-
-Profiles
-
-Private Resources. admin access only
-
-Private Resources. All users access
-
-
-## AWS Services
+- API Gateway
+  - Swagger document to define it
+  
