@@ -1,6 +1,6 @@
-# Zucchini - Secure Serveless API
+# Zucchini - Secure Serveless API with AWS
 
-> Zucchini is an Restful, Secure & Serverless API demonstration for use to an App
+> Zucchini is an Restful, Secure & Serverless API demonstration for use to an App... everything using AWS
 
 The target is to mount a completly working Restfull API. Accesible via http and https. Some resources will be public with no authentication needed but other will be protected and this resources will need authentication and authorization too.
 
@@ -16,21 +16,21 @@ The target is to mount a completly working Restfull API. Accesible via http and 
 
 Resources
 - Courses
-  Fileds: Id, Name, Date Start, Date End, University Owner
-  Added, Updated by the owner University
+  - Fileds: Id, Name, Date Start, Date End, University Owner
+  - Added, Updated by the owner University
 - Students
-  Fields: Id, Full Name, email, phone
-  Self Registration
-  Can register to a available course (between dates)
-  List all current courses
-  List all old courses
-  List all future courses
+  - Fields: Id, Full Name, email, phone
+  - Self Registration
+  - Can register to a available course (between dates)
+  - List all current courses
+  - List all old courses
+  - List all future courses
 - Universities
-  Fields: Id, Name, email, email notification
-  Self Registration, needs Zucchini staff approval
-  List owned courses
-  List students by course
-  List all students in their courses
+  - Fields: Id, Name, email, email notification
+  - Self Registration
+  - List owned courses
+  - List students by course
+  - List all students in their courses
 
 ## Architecture
 
@@ -42,3 +42,6 @@ Profiles
 Private Resources. admin access only
 
 Private Resources. All users access
+
+
+## AWS Services
