@@ -1,0 +1,156 @@
+swagger: "2.0"
+info:
+  version: 1.0.0
+  title: Zucchini API
+  description: Zucchini is an Restful, Secure & Serverless API demonstration for use to an App... everything using AWS
+  termsOfService: http://zucchini.escamarla.com/terms/
+  contact:
+    name: Zucchini API Team
+    email: zucchini.apiteam@escamarla.com
+    url: http://zucchini.escamarla.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+host: api.zucchini.escamarla.com
+basePath: /api
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /course:
+    post:
+      summary: Add a new cliente to the escuela
+      description: ''
+      operationId: addCliente
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          "$ref": "#/definitions/Cliente"
+      responses:
+        '405':
+          description: Invalid input
+  /cliente/{id}:
+    get:
+      summary: Find cliente by ID
+      description: Returns a single cliente
+      operationId: getClienteById
+      produces:
+      - application/json
+      parameters:
+      - name: clienteId
+        in: path
+        description: ID of cliente to return
+        required: true
+        type: integer
+        format: int64
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            "$ref": "#/definitions/Cliente"
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Cliente not found
+    delete:
+      summary: Deletes a Cliente
+      description: ''
+      operationId: deleteCliente
+      produces:
+      - application/json
+      parameters:
+      - name: api_key
+        in: header
+        required: false
+        type: string
+      - name: clienteId
+        in: path
+        description: Cliente id to delete
+        required: true
+        type: integer
+        format: int64
+      responses:
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Cliente not found
+definitions:
+  Course:
+    type: object
+    required:
+      - id
+      - name
+      - dateStart
+      - dateEnd
+      - universityOwner
+    properties:
+      id:
+        type: string
+        format: uuid
+      name:
+        type: string
+      dateStart:
+        type: string
+        format: date
+      dateEnd:
+        type: string
+        format: date
+      universityOwner:
+        type: string
+        format: uuid
+      description:
+        type: string
+  Student:
+    type: object
+    required:
+      - id
+      - fullName
+      - email
+    properties:
+      id:
+        type: string
+        format: uuid
+      fullName:
+        type: string
+      email:
+        type: string
+        format: email
+      phone:
+        type: string
+        format: phone
+  University:
+    type: object
+    required:
+      - id
+      - email
+    properties:
+      id:
+        type: string
+        format: uuid
+      name:
+        type: string
+      email:
+        type: string
+        format: email
+      emailNotifications:
+        type: string
+        format: email
+  ApiResponse:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      type:
+        type: string
+      message:
+        type: string
