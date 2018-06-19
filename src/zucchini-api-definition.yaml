@@ -172,7 +172,7 @@ paths:
   /university/{id}/course:
     get:
       operationId: addUniversty
-      description: > 
+      description: >
        filter by current, old or future
     post:
       operationId: addCourse
