@@ -46,3 +46,9 @@ The target is to mount a completly working Restfull API. Accesible via http and 
 - API Gateway
   - Swagger document to define it
   
+
+## Development Stepts
+- Create Buscket to deployment 'zucchini-deploy'
+- Configure CLI user 'testuser'
+- Grant 'testuser' access to 'zucchini-deploy'
+ 
