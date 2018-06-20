@@ -1,0 +1,249 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Zucchini Secure Serveless API
+Parameters:
+  TagProjectParameter:
+    Type: String
+    Default: zucchini-default
+    Description: Value to tag the Project tag key
+Resources:
+  ApiGatewayApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: ApiGatewayApi
+      Cors: "'www.example.com'"
+      StageName: Prod
+      DefinitionUri: api-definition.yml
+      CacheClusterEnabled: false
+
+  FnCourseGetBy:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: fn-course.listCurrentCourse
+      Runtime: nodejs4.3
+      Policies: AmazonDynamoDBReadOnlyAccess
+      Events:
+        GetResource:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayApi
+            Path: /course
+            Method: get
+      Tags: 
+        Project:
+          Ref: TagProjectParameter
+
+  FnStudentPost:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: fn-student.addOrUpdatedStudent
+      Runtime: nodejs4.3
+      Policies: AmazonDynamoDBFullAccess
+      Events:
+        PutResource:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayApi
+            Path: /student
+            Method: post
+      Tags: 
+        Project: !Ref TagProjectParameter
+
+  FnStudentCourseGetBy:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: fn-student.listStudentCourses
+      Runtime: nodejs4.3
+      Policies: AmazonDynamoDBFullAccess
+      Events:
+        PutResource:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayApi
+            Path: /student/{studentId}/course
+            Method: get
+      Tags: 
+        Project: !Ref TagProjectParameter
+
+  FnStudentCoursePost:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: fn-student.enroll
+      Runtime: nodejs4.3
+      Policies: AmazonDynamoDBFullAccess
+      Events:
+        PutResource:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayApi
+            Path: /student/{studentId}/course/{courseId}
+            Method: post
+      Tags: 
+        Project: !Ref TagProjectParameter
+
+  FnStudentCourseDelete:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: fn-student.unenroll
+      Runtime: nodejs4.3
+      Policies: AmazonDynamoDBFullAccess
+      Events:
+        PutResource:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayApi
+            Path: /student/{studentId}/course/{courseId}
+            Method: delete
+      Tags: 
+        Project: !Ref TagProjectParameter
+
+  FnUniversityPost:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: fn-university.addUniversty
+      Runtime: nodejs4.3
+      Policies: AmazonDynamoDBFullAccess
+      Events:
+        PutResource:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayApi
+            Path: /university
+            Method: post
+      Tags: 
+        Project: !Ref TagProjectParameter
+
+  FnUniversityCourseGetBy:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: fn-university.listUniversityCourses
+      Runtime: nodejs4.3
+      Policies: AmazonDynamoDBFullAccess
+      Events:
+        PutResource:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayApi
+            Path: /university/{universityId}/course
+            Method: get
+      Tags: 
+        Project: !Ref TagProjectParameter
+
+  FnUniversityCoursePost:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: fn-university.addCourse
+      Runtime: nodejs4.3
+      Policies: AmazonDynamoDBFullAccess
+      Events:
+        PutResource:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayApi
+            Path: /university/{universityId}/course
+            Method: post
+      Tags: 
+        Project: !Ref TagProjectParameter
+
+  FnUniversityCoursePostId:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: fn-university.updateCourse
+      Runtime: nodejs4.3
+      Policies: AmazonDynamoDBFullAccess
+      Events:
+        PutResource:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayApi
+            Path: /university/{universityId}/course/{courseId}
+            Method: post
+      Tags: 
+        Project: !Ref TagProjectParameter
+
+  FnUniversityCourseDelete:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: fn-university.deleteCourse
+      Runtime: nodejs4.3
+      Policies: AmazonDynamoDBFullAccess
+      Events:
+        PutResource:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayApi
+            Path: /university/{universityId}/course/{courseId}
+            Method: delete
+      Tags: 
+        Project: !Ref TagProjectParameter
+
+  FnUniversityStudentGetBy:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: fn-university.listUniversityStudents
+      Runtime: nodejs4.3
+      Policies: AmazonDynamoDBFullAccess
+      Events:
+        PutResource:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayApi
+            Path: /university/{universityId}/student
+            Method: get
+      Tags: 
+        Project: !Ref TagProjectParameter
+
+  TableCourse:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      TableName: course
+      PrimaryKey:
+        Name: id
+        Type: String
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      Tags:
+        Project: TagProjectParameterZucchini
+
+  TableStudent:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      TableName: student
+      PrimaryKey:
+        Name: id
+        Type: String
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      Tags:
+        Project: TagProjectParameterZucchini
+
+  TableUniversity:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      TableName: university
+      PrimaryKey:
+        Name: id
+        Type: String
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      Tags:
+        Project: TagProjectParameterZucchini
+
+Outputs:
+
+  ApiGatewayId:
+      Description: "API Gateway endpoint URL for Production https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
+      Value: !Ref ApiGatewayApi
+
+  ApiGatewayUrl:
+    Description: URL of your API endpoint
+    Value: !Join
+      - ''
+      - - https://
+        - !Ref ApiGatewayApi
+        - '.execute-api.'
+        - !Ref 'AWS::Region'
+        - '.amazonaws.com/Prod'

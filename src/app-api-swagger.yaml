@@ -1,0 +1,118 @@
+---
+swagger: "2.0"
+info:
+  version: 1.0.0
+  title: Zucchini API
+  description: Zucchini is an Restful, Secure & Serverless API demonstration for use to an App... everything using AWS
+  termsOfService: http://zucchini.escamarla.com/terms/
+  contact:
+    name: Zucchini API Team
+    email: zucchini.apiteam@escamarla.com
+    url: http://zucchini.escamarla.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+host: api.zucchini.escamarla.com
+basePath: /v1
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /course:
+    get:
+      x-amazon-apigateway-integration:
+        uri: "arn:aws:apigateway:eu-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:REGION:ACCOUNT:function:${stageVariables.MyLambda}/invocations"
+        passthroughBehavior: "when_no_match"
+        httpMethod: "GET"
+        type: "aws_proxy"
+      operationId: listCurrentCourse
+      description: 'filter by name, university or area'
+      parmeters:
+        - name: coursePartialName
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: universityPartialName
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: areaPartialName
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of courses
+          content:
+            application/json:
+              schema:
+                $ref : '#/definitions/Course'
+        '400':
+          description: Bad request
+definitions:
+  Course:
+    type: object
+    required:
+      - id
+      - name
+      - dateStart
+      - dateEnd
+      - universityOwner
+    properties:
+      id:
+        type: string
+        format: uuid
+      name:
+        type: string
+      dateStart:
+        type: string
+        format: date
+      dateEnd:
+        type: string
+        format: date
+      universityOwner:
+        type: string
+        format: uuid
+      description:
+        type: string
+      area:
+        type: string
+        enum: [arts, business, computer, math, language, social]
+  Error:
+    type: object
+    properties:
+      code:
+        type: string
+      message:
+        type: string
+    required:
+      - code
+      - message
+  responses:
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/definitions/Error'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/definitions/Error'
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      type:
+        type: string
+      message:
+        type: string

@@ -1,3 +1,4 @@
+---
 swagger: "2.0"
 info:
   version: 1.0.0
@@ -73,12 +74,12 @@ paths:
                 format: uuid          
         '401':
           $ref: '#/definitions/responses/Unauthorized' 
-  /student/{id}/course/:
+  /student/{studentId}/course:
     get:
       operationId: listStudentCourses
       description: 'filter by current, old or future'
       parmeters:
-        - name: id
+        - name: studentId
           in: path
           required: true
           schema:
@@ -101,7 +102,7 @@ paths:
           description: Bad request
         '401':
           $ref: '#/definitions/responses/Unauthorized' 
-  /student/{studentId}/course/{id}:
+  /student/{studentId}/course/{courseId}:
     post:
       operationId: enroll
       description: 'check course dates' 
@@ -112,7 +113,7 @@ paths:
           schema:
             type: string
             enum: uuid
-        - name: id
+        - name: courseId
           in: path
           required: true
           schema:
@@ -135,7 +136,7 @@ paths:
           schema:
             type: string
             enum: uuid
-        - name: id
+        - name: courseId
           in: path
           required: true
           schema:
@@ -169,22 +170,22 @@ paths:
                 format: uuid          
         '401':
           $ref: '#/definitions/responses/Unauthorized' 
-  /university/{id}/course:
+  /university/{universityId}/course:
     get:
-      operationId: addUniversty
+      operationId: listStudentCourses
       description: >
        filter by current, old or future
     post:
       operationId: addCourse
       description: ''
-  /university/{universityId}/course/{id}:
+  /university/{universityId}/course/{courseId}:
     post:
       operationId: updateCourse
       description: ''
     delete:
       operationId: deleteCourse
       description: 'check for no enrolled student'
-  /university/{id}/student:
+  /university/{universityId}/student:
     get:
       operationId: listUniversityStudents
       description: 'filter by course ids'

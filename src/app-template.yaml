@@ -1,0 +1,62 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Zucchini Secure Serveless API
+Parameters:
+  TagProjectParameter:
+    Type: String
+    Default: zucchini-default
+    Description: Value to tag the Project tag key
+Resources:
+  ApiGatewayApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: ApiGatewayApi
+      StageName: Prod
+      DefinitionUri: api-definition.yml
+      CacheClusterEnabled: false
+
+  FnCourseGetBy:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: fn-course.listCurrentCourse
+      Runtime: nodejs4.3
+      Policies: AmazonDynamoDBReadOnlyAccess
+      Events:
+        GetResource:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayApi
+            Path: /course
+            Method: get
+      Tags: 
+        Project:
+          Ref: TagProjectParameter
+
+  TableCourse:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      TableName: course
+      PrimaryKey:
+        Name: id
+        Type: String
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      Tags:
+        Project: TagProjectParameterZucchini
+
+Outputs:
+
+  ApiGatewayId:
+      Description: "API Gateway endpoint URL for Production https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
+      Value: !Ref ApiGatewayApi
+
+  ApiGatewayUrl:
+    Description: URL of your API endpoint
+    Value: !Join
+      - ''
+      - - https://
+        - !Ref ApiGatewayApi
+        - '.execute-api.'
+        - !Ref 'AWS::Region'
+        - '.amazonaws.com/Prod'
